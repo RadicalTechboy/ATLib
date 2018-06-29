@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 
 namespace HeboTech.ATLib.TestConsole
@@ -8,19 +7,23 @@ namespace HeboTech.ATLib.TestConsole
     {
         static void Main(string[] args)
         {
-            using (MemoryStream stream = new MemoryStream())
-            using (GsmStream gsmStream = new GsmStream(stream, Encoding.ASCII))
-            {
-                Gsm g = new Gsm(gsmStream);
-                if (!g.InitializeAsync().Result)
-                    Console.WriteLine("Initialization failed");
-                if (!g.SetModeAsync(Mode.Text).Result)
-                    Console.WriteLine("Set mode failed");
-                if (!g.SendSmsAsync(new PhoneNumber("12345678"), "Msg").Result)
-                    Console.WriteLine("Sending SMS failed");
+            PduEncoder pduEncoder = new PduEncoder(Encoding.ASCII);
+            string pduMessage = pduEncoder.Encode(new PhoneNumber("12345678"), "Tada");
+            Console.WriteLine(pduMessage);
 
-                Console.WriteLine(Encoding.Default.GetString(stream.ToArray()));
-            }
+            //using (MemoryStream stream = new MemoryStream())
+            //using (GsmStream gsmStream = new GsmStream(stream, Encoding.ASCII))
+            //{
+            //    Gsm g = new Gsm(gsmStream);
+            //    if (!g.InitializeAsync().Result)
+            //        Console.WriteLine("Initialization failed");
+            //    if (!g.SetModeAsync(Mode.Text).Result)
+            //        Console.WriteLine("Set mode failed");
+            //    if (!g.SendSmsAsync(new PhoneNumber("12345678"), "Msg").Result)
+            //        Console.WriteLine("Sending SMS failed");
+
+            //    Console.WriteLine(Encoding.Default.GetString(stream.ToArray()));
+            //}
 
             Console.ReadKey();
         }
